@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.jcr.LoginException;
+import javax.jcr.Session;
 import javax.lang.model.util.Elements;
 import javax.servlet.Servlet;
 import org.apache.http.HttpResponse;
@@ -206,7 +207,20 @@ public class CreateContentFolderServlet extends SlingAllMethodsServlet {
 		}
 
 	}
+	public String deleteContentFragment(String postid) {
+		try (ResourceResolver resourceResolver = loginAsServiceUser()) {
+			String foldername = String.valueOf(((Integer.parseInt(postid)) / 100) + 1);
+			String path="/content/dam/BlissProject/comments/folder-" + foldername + "/" + postid;
+			Session session = resourceResolver.adaptTo(Session.class);
+			session.removeItem(path);
+			session.save();
+			return "content fragment"+postid+" is deleted";
+		} catch (Exception e) {
+			return "Error : "+e.getMessage();
+			}
+	}
 }
+
 
 // Coments class 
 package com.BlissProject.core.Entity;
